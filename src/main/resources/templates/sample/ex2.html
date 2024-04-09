@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!--타임리프의 제어문 처리는 th:if~unless 등을 이용할 수 있고 삼항연산자 스타일을 사용할 수도 있음-->
+    <!--다른 언어들과 다르게 "if~else"를 단독으로 처리함-->
+  <ul>
+    <li th:each="dto: ${list}"> <!--for문 모델에 있는 list 키를 가져옴-->
+      [[${dto}]] <!--list 안쪽 전체를 출력-->
+    </li>
+  </ul>
+
+  <ul>
+    <li th:each="dto, state : ${list}" th:if="${dto.sno % 5 == 0}"> <!--for문 모델에 있는 list 키를 가져옴-->
+      [[${dto}]] <!--list 안쪽 전체를 출력-->
+    </li>
+  </ul>
+
+  <ul>
+    <li th:each="dto, state : ${list}"> <!--for문 모델에 있는 list 키를 가져옴-->
+        <span th:if="${dto.sno % 5 == 0}" th:text="${'-----------------' + dto.sno}"></span>
+        <span th:unless="${dto.sno % 5 == 0}" th:text="${dto.first}"></span>
+    </li>
+  </ul>
+  <!--sno를 5로 나눈 나머지가 0인 경우 sno만을 출력하고 나머지는 first를 출력하고 싶을 때-->
+  <!--특정 CSS의 클래스를 지정하는 등의 작업을 편하게 할 수 있음-->
+  <ul>
+    <li th:each="dto, state : ${list}" th:text="${dto.sno % 5 ==0}?${dto.sno}: ${dto.first}">
+    </li>
+  </ul>
+</body>
+</html>
