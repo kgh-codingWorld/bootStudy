@@ -5,6 +5,15 @@
     <title>Title</title>
 </head>
 <body>
-<h1 th:text="${'Hello World'}"></h1>
+
+<h1 th:text="${result}"></h1>
+<h1 th:text="${dto}"></h1>
+
+<script th:inline="javascript">
+
+    var msg = [[${result}]];
+    var dto = [[${dto}]];
+</script>
+
 </body>
 </html>

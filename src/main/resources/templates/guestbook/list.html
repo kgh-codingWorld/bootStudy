@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+    <th:block th:fragment="content">
+
+        <h1 class="mt-4">GuestBook List Page
+            <span>
+                <a th:href="@{/guestbook/register}">
+                    <button type="button" class="btn btn-outline-primary">REGISTER</button>
+                </a>
+            </span>
+        </h1>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Gno</th>
+                <th scope="col">Title</th>
+                <th scope="col">Regdate</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="dto : ${result.dtoList}">
+                <th scope="row">
+                    <a th:href="@{/guestbook/read(gno = ${dto.gno}, page= ${result.page})}">
+                        [[${dto.gno}]]
+                    </a> <!--각 글의 번호에 링크 처리됨-->
+                    </th>
+                <td>[[${dto.title}]]</td>
+                <td>[[${dto.writer}]]</td>
+                <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
+            </tr> <!--#temporals.format()는 Thymeleaf의 날짜 및 시간 형식 지정 기능을 사용하여 날짜를 지정된 형식으로 포맷-->
+            </tbody>
+        </table>
+        <ul class="pagination h-100 justify-content-center align-items-center">
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link " th:href="@{/guestbook/list(page= ${result.start -1})}" tabindex="-1">Previous</a>
+            </li> <!--PageResultDTO의 start 값에서 1보다 적은 값으로 지정-->
+
+            <li th:class=" 'page-item ' + ${result.page == page?'active':''}"
+                th:each="page: ${result.pageList}">
+                <a class="page-link" th:href="@{/guestbook/list(page = ${page})}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link" th:href="@{/guestbook/list(page= ${result.end + 1})}">Next</a>
+            </li> <!--PageResultDTO의 end 값보다 1이 크도록 지정-->
+        </ul> <!--(page= {page}, size= ${result.size})와 같이 추가하면 원하는 수만큼의 목록 조회 가능-->
+
+        <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Modal body text goes here.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script th:inline="javascript">
+
+            var msg = [[${msg}]];
+
+            console.log(msg);
+
+            if(msg){
+                $(".modal").modal();
+            }
+        </script>
+    </th:block>
+
+</th:block>
