@@ -1,5 +1,7 @@
 package org.zerock.board.repository;
 
+
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,74 +10,108 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
-import org.springframework.transaction.annotation.Transactional;
+import org.zerock.board.entity.Member;
 import org.zerock.board.entity.Memo;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-@SpringBootTest //부트용 테스트 코드임을 명시
+@SpringBootTest // 부트용 테스트 코드임을 명시함
 public class MemoRepositoryTests {
 
-    @Autowired //생성자 자동 주입
+    @Autowired // 생성자 자동 주입
     MemoRepository memoRepository;
 
-    @Test
-    public void testClass(){
-        //객체 주입 테스트(MemoRepository는 인터페이스임을 기억할 것)
-        //인터페이스는 구현체가 있어야 함
-        System.out.println("memoRepository.getClass().getName():" + memoRepository.getClass().getName());
-        //memoRepository에 생성된 객체의 클래스명과 이름 알아보기
-        //콘솔 결과: jdk.proxy3.$Proxy120(동적 프록시: 인터페이스의 실행 구현 클래스)
-    }
+    @Autowired
+    MemberRepository memberRepository;
 
     @Test
-    public void testInsertDummies(){
-        //memo 테이블에 더미데이터 추가
-        IntStream.rangeClosed(1, 100).forEach(i -> {
-            Memo memo = Memo.builder()
-                    .memoText("sample......" + i)
-                    .build(); //Memo 클래스에 memoText(1~100) 생성 반복
-            memoRepository.save(memo); // .save(jpa 상속으로 사용)
-            //save 없으면 insert, 있으면 update
+    public void insertMembers(){
+
+        IntStream.rangeClosed(1,100).forEach(i -> {
+            Member member = Member.builder()
+                    .email("user" + i + "@aaa.com")
+                    .password("1111")
+                    .name("USER" + i)
+                    .build();
+            memberRepository.save(member);
         });
     }
+    @Test
+    public void testClass() {
+        // 객체 주입 테스트  (MemoRepository는 인터페이스 임을 기억해라)
+        // 인터페이스는 구현객체가 있어야 된다.
+        System.out.println(memoRepository.getClass().getName());
+        // memoRepository 생성된 객체의 클래스명과 이름을 알아보자.
+        // 콘솔 결과 jdk.proxy3.$Proxy115 (동적 프록시 : 인터페이스 실행 구현 클래스임)
+    }
 
     @Test
-    public void testSelect(){
-        //있는 정보 가져오기(mno 이용)
+    public void testInsertDummies() {
+        // memo 테이블에 더미데이터 추가
+        IntStream.rangeClosed(1,100).forEach(i -> {
+            Memo memo = Memo.builder()
+                    .memoText("Sample...."+i)
+                    .build(); // Memo 클래스에 memoText(1~100)생성 반복
+            memoRepository.save(memo) ; // .save( jpa 상속으로 사용)
+            // save 없으면 insert, 있으면 update 함
+
+        });
+
+    }
+
+    @Test
+    public void testSelect() {
+        // 있는 정보 가져오기 (mno를 이용)
         Long mno = 100L;
 
-        Optional<Memo> result = memoRepository.findById(mno);
-        //.findById(mno) -> select * from 표 where mno = 100;
-        //.findById(): 쿼리가 미리 실행되고나서 결과 출력됨
+        Optional<Memo> result = memoRepository.findById(mno) ;
+        // import java.util.Optional;
+        // .findById(mno) -> select * from 표 where mno = 100 ;
 
-        System.out.println("======================================");
+        System.out.println("========== mno = 100 ===============");
         if(result.isPresent()){
             Memo memo = result.get();
-            System.out.println(memo); //엔티티에 toString 되어 있음
+            System.out.println(memo);  // 엔티티가 toString 되어 있음
         }
+        // .findById(mno)는 쿼리가 미리 실행됨, 결과 출력 나중에
+        //========== mno = 100 ===============
+        //Memo(mno=100, memoText=샘플메모들....100)
     }
 
     @Transactional
     @Test
-    public void testSelect2(){
-        Long mno = 100L;
-        Memo memo = memoRepository.getOne(mno); //보안 때문에 현재 차단된 메서드, SQL문 호출전에 결과부터 출력되기 때문에 좋지 않음
-
-        System.out.println("=====================================");
+    public void testSelect2() {
+        Long mno = 100L ;
+        Memo memo = memoRepository.getOne(mno); // getOne 현재 차단된 메서드(보안상)
+        //  @Transactional 필수 , 변수가 호출될 때 쿼리가 실행 된다.
+        System.out.println("=============Long mno = 100L ; .getOne(mno)===================");
         System.out.println(memo);
+        //  [org.zerock.board.entity.Memo#100] - no Session -> @Transactional 필요함
+        //=============Long mno = 100L ; .getOne(mno)===================
+        //
+        //Hibernate:
+        //    select
+        //        m1_0.mno,
+        //        m1_0.memo_text
+        //    from
+        //        tbl_memo m1_0
+        //    where
+        //        m1_0.mno=?
+        //Memo(mno=100, memoText=샘플메모들....100)
     }
 
     @Test
-    public void updateTest(){
+    public void updateTest() {
         Memo memo = Memo.builder()
                 .mno(300L)
-                .memoText("수정된 텍스트 테스트")
+                .memoText("수정된 텍스트 테스트.....")
                 .build();
+
         System.out.println(memoRepository.save(memo));
-//        Hibernate:
+        // .save(memo) -> 없으면 insert , 있으면 update
+//       Hibernate:
 //        select
 //        m1_0.mno,
 //                m1_0.memo_text
@@ -90,23 +126,48 @@ public class MemoRepositoryTests {
 //        memo_text=?
 //        where
 //        mno=?
-//        Memo(mno=100, memoText=수정된 텍스트 테스트)
-
+//        Memo(mno=100, memoText=수정된 텍스트 테스트.....)
     }
 
     @Test
-    public void testDelete(){
-        Long mno = 300L;
+    public void testDelete() {
+
+        Long mno = 300L ;
         memoRepository.deleteById(mno);
     }
 
+
     @Test
     public void testPageDefault() {
-        // jpa에 내장된 페이징, 정렬 기법 활용
+// import org.springframework.data.domain.Pageable;
+        Pageable pageable = PageRequest.of(0, 10) ; // 내장된 페이징 처리
+// import org.springframework.data.domain.Page;
+        Page<Memo> result = memoRepository.findAll(pageable);
 
+        System.out.println(result);
+        //Hibernate:
+        //    select
+        //        m1_0.mno,
+        //        m1_0.memo_text
+        //    from
+        //        tbl_memo m1_0
+        //    limit (레코드 제한 개수)
+        //        ?,?
+        //Hibernate:
+        //    select
+        //        count(m1_0.mno)
+        //    from
+        //        tbl_memo m1_0
+        //Page 1 of 21 containing org.zerock.board.entity.Memo instances
+    }
+
+    @Test
+    public void testPageDefaults() {
+        // jpa에 내장된 페이징, 정렬 기법 활용
         Sort sort1 = Sort.by("mno").descending();
         Sort sort2 = Sort.by("memoText").ascending();
-        Sort sortAll = sort1.and(sort2); //내림차순 번호 and 메모 텍스트 오름차순
+        Sort sortAll = sort1.and(sort2); // 내림차순 번호 & 메모텍스트 오름차순
+        //import org.springframework.data.domain.Sort;
         Pageable pageable = PageRequest.of(0, 10, sortAll);
 
         Page<Memo> result = memoRepository.findAll(pageable);
@@ -167,25 +228,25 @@ public class MemoRepositoryTests {
             //Memo(mno=9, memoText=Sample....9)
             //Memo(mno=10, memoText=Sample....10)
         }
+
     }
 
     @Test
-    public void testQueryMethod(){
+    public void testQureyMethods() {
 
-        //memoRepository에 있는 query 메서드를 실행하여 리스트 객체로 받음
-        List<Memo> list = memoRepository.findByMnoBetweenOrderByMnoDesc(70L, 80L);
-
-        //받은 리스트 객체를 for문을 이용하여 콘솔에 출력
-        for (Memo memo : list) {
+        List<Memo> list = memoRepository.findByMnoBetweenOrderByMnoDesc(70L,80L);
+        // memoRepository에 있는 쿼리메서드를 실행하여 리스트 객체로 받음
+        for(Memo memo : list) {
             System.out.println(memo);
-        }
+        } // 받은 리스트 객체를 for문을 이용해 콘솔 출력
+
     }
 
     @Test
-    public void testQueryMethodWithPage(){
+    public void testQuerymethodWithPage() {
 
-        // 페이지 타입은 of를 이용하여 요청을 처리함(공식)
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending());
+        Pageable pageable = PageRequest.of(0,10, Sort.by("mno").descending());
+        // 페이지 타입은 of를 이용해서 요청을 처리함, 0번에 10개를 mno를 기준으로 내림차순 정렬을 매개 값으로 전달
 
         Page<Memo> result = memoRepository.findByMnoBetween(10L, 50L, pageable);
 
@@ -193,12 +254,12 @@ public class MemoRepositoryTests {
 
     }
 
-    @Transactional // delete에서는 2개의 쿼리문이 동작해야 함
-    @Commit // delete는 auto commit이 불가
+    @Transactional // delete 에서는 2개의 쿼리문이 동작해야함
+    @Commit // delete인 경우에는 auto commit 이 안됨
     @Test
-    public void testDeleteQueryMethod(){
-
-        // 쿼리 메서드로 delete 처리를 하면 9회의 쿼리문이 전달되므로 비효율적임 -> @Query를 사용하는 것이 좋음
+    public void testDeleteQueryMethods() {
+        // 쿼리 메서드로 delete 처리를 하면 9번의 쿼리문이 전달 됨 (비효율적) -> @Query를 사용해야 좋다
         memoRepository.deleteMemoByMnoLessThan(10L);
     }
+
 }
