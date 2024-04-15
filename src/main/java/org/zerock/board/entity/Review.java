@@ -25,4 +25,14 @@ public class Review extends BaseEntity { // Movie와 Member를 양쪽으로 참�
     private int grade;
 
     private String text;
+
+    // 450 추가
+    public void changeGrade(int grade) {
+        this.grade = grade;
+    }
+
+    public void changeText(String text) {
+        this.text = text;
+
+    }
 }

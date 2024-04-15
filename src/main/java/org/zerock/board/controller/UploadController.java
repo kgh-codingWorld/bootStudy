@@ -103,7 +103,7 @@ public class UploadController { // 업로드된 파일 저장
     }
 
     @GetMapping("/display")
-    public ResponseEntity<byte[]> getFile(String fileName) {
+    public ResponseEntity<byte[]> getFile(String fileName, String size) {
         // URL 인코딩된 파일의 이름을 파라미터로 받아서 해당 파일을 byte[]로 만들어서 브라우저로 전송
 
         ResponseEntity<byte[]> result = null;
@@ -115,6 +115,9 @@ public class UploadController { // 업로드된 파일 저장
 
             File file = new File(uploadPath + File.separator + srcFileName);
 
+            if(size != null && size.equals("1")) {
+                file = new File(file.getParent(), file.getName().substring(2));
+            }
             log.info("file: " + file);
 
             HttpHeaders header = new HttpHeaders();

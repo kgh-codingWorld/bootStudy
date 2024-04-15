@@ -9,12 +9,13 @@ import org.zerock.board.entity.Review;
 
 import java.util.List;
 
-public interface MovieRepository extends JpaRepository<Movie, Long> {
+public interface MovieRepository extends JpaRepository<Movie, Long> { // 평점 데이터 처리
 
     //    @Query("select m, avg(coalesce(r.grade,0)),  count(r) from Movie m " +
 //            "left outer join Review  r on r.movie = m group by m")
 //    Page<Object[]> getListPage(Pageable pageable);
 
+    // Movie 객치와 MovieImage 객체 하나, double 값으로 나오는 영화의 평균 평점/long 타입의 리뷰 개수를 Object[]로 반환
     @Query("select m, mi, avg(coalesce(r.grade,0)),  count(r) from Movie m " +
             "left outer join MovieImage mi on mi.movie = m " +
             "left outer join Review  r on r.movie = m group by m ")
