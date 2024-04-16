@@ -3,7 +3,9 @@ package org.zerock.board.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.zerock.board.entity.Member;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
+import org.zerock.board.entity.Mmember;
 import org.zerock.board.entity.Movie;
 import org.zerock.board.entity.Review;
 
@@ -29,10 +31,10 @@ public class ReviewRepositoryTests {
 
             //리뷰어 번호
             Long mid  =  ((long)(Math.random()*100) + 1 );
-            Member member = Member.builder().mid(mid).build();
+            Mmember mmember = Mmember.builder().mid(mid).build();
 
             Review movieReview = Review.builder()
-                    .member(member)
+                    .mmember(mmember)
                     .movie(Movie.builder().mno(mno).build())
                     .grade((int)(Math.random()* 5) + 1)
                     .text("이 영화에 대한 느낌..."+i)
@@ -55,28 +57,10 @@ public class ReviewRepositoryTests {
             System.out.print(movieReview.getReviewnum());
             System.out.print("\t"+movieReview.getGrade());
             System.out.print("\t"+movieReview.getText());
-            System.out.print("\t"+movieReview.getMember().getEmail());
+            System.out.print("\t"+movieReview.getMmember().getEmail());
             System.out.println("---------------------------");
         });
-        //Hibernate:
-        //    select
-        //        r1_0.reviewnum,
-        //        r1_0.grade,
-        //        m1_0.mid,
-        //        m1_0.email,
-        //        m1_0.nickname,
-        //        m1_0.pw,
-        //        r1_0.moddate,
-        //        r1_0.movie_mno,
-        //        r1_0.regdate,
-        //        r1_0.text
-        //    from
-        //        review r1_0
-        //    left join
-        //        m_member m1_0
-        //            on m1_0.mid=r1_0.mmember_mid
-        //    where
-        //        r1_0.movie_mno=?
-        //30	4	이 영화에 대한 느낌...30	r14@zerock.org---------------------------
+
     }
+
 }

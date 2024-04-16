@@ -18,6 +18,8 @@ import org.zerock.board.service.BoardService;
 @Log4j2
 @RequiredArgsConstructor
 public class BoardController {
+    // 클라이언트로부터의 HTTP 요청을 처리하고 응답을 반환
+    // DTO를 사용하여 클라이언트와 데이터를 주고받음
 
     private final BoardService boardService; // final로 선언 -> Board만의 컨트롤러이기 때문에 Service도 고정해놓음
 
@@ -68,7 +70,7 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
-    @PostMapping("/modiry")
+    @PostMapping("/modify")
     public String modify(BoardDTO dto,
                          @ModelAttribute("requestDTO") PageRequestDTO requestDTO, RedirectAttributes rttr) {
 

@@ -1,7 +1,7 @@
 package org.zerock.board.service;
 
 import org.zerock.board.dto.ReviewDTO;
-import org.zerock.board.entity.Member;
+import org.zerock.board.entity.Mmember;
 import org.zerock.board.entity.Movie;
 import org.zerock.board.entity.Review;
 
@@ -26,7 +26,7 @@ public interface ReviewService {
         Review movieReview = Review.builder()
                 .reviewnum(movieReviewDTO.getReviewnum())
                 .movie(Movie.builder().mno(movieReviewDTO.getMno()).build())
-                .member(Member.builder().mid(movieReviewDTO.getMid()).build())
+                .mmember(Mmember.builder().mid(movieReviewDTO.getMid()).build())
                 .grade(movieReviewDTO.getGrade())
                 .text(movieReviewDTO.getText())
                 .build();
@@ -39,9 +39,9 @@ public interface ReviewService {
         ReviewDTO movieReviewDTO = ReviewDTO.builder()
                 .reviewnum(movieReview.getReviewnum())
                 .mno(movieReview.getMovie().getMno())
-                .mid(movieReview.getMember().getMid())
-                .nickname(movieReview.getMember().getName())
-                .email(movieReview.getMember().getEmail())
+                .mid(movieReview.getMmember().getMid())
+                .nickname(movieReview.getMmember().getNickname())
+                .email(movieReview.getMmember().getEmail())
                 .grade(movieReview.getGrade())
                 .text(movieReview.getText())
                 .regDate(movieReview.getRegDate())

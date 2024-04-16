@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 @Data
 public class PageResultDTO<DTO, EN> { // 다양한 곳에서 사용할 수 있도록 제네릭 타입을 사용하여 타입 지정
-    // 페이징 처리 담당
+    // 페이징 처리 담당(결과)
     // JPA를 이용하는 Repository에서는 페이지 처리 결과를 Page<Entity> 타입으로 반환하는데 해당 클래스에서 이를 처리
     // Page<Entity>의 엔티티 객체들을 dto 객체로 변환해 자료구조로 담아주어야 함
     // 화면 출력에 필요한 페이지 정보들을 구성해 주어야 함

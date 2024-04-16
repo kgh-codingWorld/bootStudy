@@ -1,5 +1,6 @@
 package org.zerock.board.repository;
 
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,11 +17,14 @@ public class MemberRepositoryTests {
     @Test
     public void insertMembers() {
 
-        IntStream.rangeClosed(1,100).forEach(i -> {
+        IntStream.rangeClosed(1, 100).forEach(i -> {
+
             Member member = Member.builder()
-                    .email("r"+i+"@zerock.org")
+                    .email("user" + i + "@aaa.com")
                     .password("1111")
-                    .name("reviewer"+i).build();
+                    .name("USER" + i)
+                    .build();
+
             memberRepository.save(member);
         });
     }

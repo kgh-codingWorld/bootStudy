@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardDTO {
+    // 데이터 전송을 위한 객체
+    // 클라이언트와 서버 간의 데이터 전송에 사용
+    // 컨트롤러와 서비스 사이에서 데이터를 전달하는 데 사용될 수 있음
 
     private Long bno;
     private String title;

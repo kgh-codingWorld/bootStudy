@@ -20,7 +20,7 @@ public class ReviewDTO { // 화면에 필요한 모든 내용을 가지고 있�
     //Movie mno
     private Long mno;
 
-    //Membmer id
+    //Member id
     private Long mid;
 
     //Member nickname
